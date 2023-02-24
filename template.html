@@ -96,19 +96,16 @@
                 </div>
                 <h5>Color</h5>
                 <div>
-                    
-
-                    <div class="color-box clic" v-for="value in producto.colores" v-bind:style=`background-color:${value}` ></div>
+                    <div class="color-box clic" v-on:click="setColor(value)"  v-for="value in producto.colores" v-bind:style=`background-color:${value}` ></div>
 
                 </div>
                 <h5>Cantidad</h5>
                 <div class="quantity">
-                    <button>-</button> <div>1</div> <button>+</button>
+                    <button v-on:click="decrementar">-</button> <div>{{ pedido.cantidad }}</div> <button v-on:click="incrementar">+</button>
                 </div>
                 <div class="buy-box">
-                    <button type="button" class="btn btn-primary">Comprar</button>
+                    <button type="button" v-on:click="comprar(producto.id, pedido.cantidad)" class="btn btn-primary" :disabled="desabilitar">Comprar</button>
                 </div>
-                
             </div>
         </div>
     </div>
@@ -150,17 +147,7 @@
         var app = new Vue({
             el: '#app',
             data: {
-                methods: {
-                    
-                },
-                
-                pedido:
-                {
-                    id:null,
-                    cantidad: 1,
-                    color:null    
-                },
-
+   
                 configuracionPagina:
                 {
                     marca: "MegaDron",
@@ -213,12 +200,44 @@
                         precio:"1800",
                         colores: ["teal", "blue", "slategrey", "navy"]
                     }
-                ]
+                ],
+
+                pedido:
+                {
+                    id:null,
+                    cantidad: 0,
+                    color:null    
+                },
 
 
-
-
-            }
+            },
+            methods: {
+                incrementar: function(param){
+                    app.pedido.cantidad++
+                },
+                decrementar: function(param){
+                    if(app.pedido.cantidad>0)
+                        app.pedido.cantidad--
+                },
+                setColor: function(param){
+                    app.pedido.color = param
+                },
+                comprar: function (param, param1) {
+                    app.pedido.id = param
+                    app.pedido.cantidad = param1
+                    alert(
+                        "ID: "+app.pedido.id+"\n"+
+                        "Cantidad: "+app.pedido.cantidad+"\n"+
+                        "Color: "+app.pedido.color+"\n"
+                    )
+                    
+                }
+            },
+            computed:{
+                desabilitar: function(){
+                    return (this.pedido.cantidad == 0) || (this.pedido.color == null) 
+                }
+            },
         })
     </script>
 </body>
